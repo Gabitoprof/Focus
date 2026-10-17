@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   // PGlite carrega arquivos WASM em tempo de execução; não deve passar pelo bundler.
   serverExternalPackages: ["@electric-sql/pglite"],
+  // Demonstração pelo túnel da Cloudflare (npm run demo:tunnel): o servidor de desenvolvimento
+  // aceita ser acessado por esses endereços.
+  allowedDevOrigins: ["*.trycloudflare.com"],
+  ...(process.env.NODE_ENV !== "production" && {
+    experimental: { serverActions: { allowedOrigins: ["*.trycloudflare.com"] } },
+  }),
   // "Categoria" virou "Registro": links antigos continuam funcionando.
   async redirects() {
     return [

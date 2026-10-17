@@ -19,7 +19,8 @@
     "user:email": "tsx scripts/change-email.ts",
     "catalog:import-cnpq": "tsx scripts/import-cnpq.ts",
     "demo:seed": "tsx --env-file=.env.local scripts/seed-demo.ts",
-    "demo:schedule": "tsx --env-file=.env.local scripts/demo-schedule.ts"
+    "demo:schedule": "tsx --env-file=.env.local scripts/demo-schedule.ts",
+    "demo:tunnel": "node scripts/demo-tunnel.mjs"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",

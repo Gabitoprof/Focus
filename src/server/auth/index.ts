@@ -11,6 +11,8 @@ function createAuth(db: DB) {
     appName: "Focus",
     baseURL: process.env.BETTER_AUTH_URL,
     secret: process.env.BETTER_AUTH_SECRET,
+    // Demonstração pelo túnel da Cloudflare (npm run demo:tunnel): só em desenvolvimento.
+    trustedOrigins: process.env.NODE_ENV === "production" ? [] : ["https://*.trycloudflare.com"],
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: { user: schema.user, session: schema.session, account: schema.account, verification: schema.verification },
