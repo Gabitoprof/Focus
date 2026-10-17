@@ -196,6 +196,22 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
             />
           </section>
 
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <h2 className="font-semibold">{D.perDay}</h2>
+              <p className="mb-4 text-xs text-text-2">{D.timezone(data.timezone)}</p>
+              <DailyChart data={data.perDay} extra={data.perDayExtra} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
+            </Card>
+            <Card>
+              <h2 className="mb-4 font-semibold">{D.byCategory}</h2>
+              {data.byCategory.length ? (
+                <CategoryBars data={data.byCategory} />
+              ) : (
+                <p className="text-sm text-text-2">{D.noStudy}</p>
+              )}
+            </Card>
+          </div>
+
           {/* Score de foco do período: pontos pela qualidade do foco (detalhe de cada parte). */}
           <section aria-label={D.score.title} className="rounded-xl border border-border bg-surface p-4">
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-3">
@@ -231,22 +247,6 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
               </ul>
             </details>
           </section>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-              <h2 className="font-semibold">{D.perDay}</h2>
-              <p className="mb-4 text-xs text-text-2">{D.timezone(data.timezone)}</p>
-              <DailyChart data={data.perDay} extra={data.perDayExtra} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
-            </Card>
-            <Card>
-              <h2 className="mb-4 font-semibold">{D.byCategory}</h2>
-              {data.byCategory.length ? (
-                <CategoryBars data={data.byCategory} />
-              ) : (
-                <p className="text-sm text-text-2">{D.noStudy}</p>
-              )}
-            </Card>
-          </div>
 
           <Card>
             <h2 className="mb-4 font-semibold">{D.byTopic}</h2>
