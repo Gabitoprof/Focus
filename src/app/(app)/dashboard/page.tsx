@@ -198,7 +198,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
           </nav>
           {rangeError && <p className="text-sm text-danger">{D.rangeError(rangeError)}</p>}
 
-          <section aria-label={D.summary} className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+          <section aria-label={D.summary} className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
             <Stat small label={D.studiedPeriod} value={formatDuration(p.studiedSeconds)} />
             <Stat small label={D.planned} value={formatDuration(p.plannedSeconds)} hint={D.endedSessions(p.sessions)} />
             <Stat small label={D.overtime} value={formatDuration(p.overtimeSeconds)} hint={D.overtimeHint} />
@@ -215,6 +215,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
               value={formatDuration(p.breaks.seconds)}
               hint={p.breaks.penalties ? D.breaksLate(p.breaks.penalties, p.breaks.penaltyXp) : D.breaksOk(p.breaks.count)}
             />
+            <Stat small label={D.overrun} value={formatDuration(p.breaks.overrunSeconds)} hint={D.overrunHint(p.breaks.penalties)} />
           </section>
 
           {/* Score de foco do período: pontos pela qualidade do foco (detalhe de cada parte). */}

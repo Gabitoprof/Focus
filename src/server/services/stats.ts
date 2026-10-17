@@ -365,6 +365,7 @@ export async function getDashboard(
         seconds: Number(breakStats.seconds),
         penalties: Number(breakStats.penalties),
         penaltyXp: Number(breakStats.penaltyXp),
+        overrunSeconds: Number(breakStats.overrunSeconds),
       },
     },
     perDay: [...perDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, seconds]) => ({ day, seconds })),

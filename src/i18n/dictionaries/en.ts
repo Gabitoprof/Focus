@@ -353,6 +353,8 @@ export const en: Dict = {
     noPauses: "no pauses",
     breaks: "Breaks",
     breaksLate: (n, xp) => `${n} exceeded (−${xp} XP)`,
+    overrun: "Break overrun",
+    overrunHint: (n) => (n ? `in ${n} ${n === 1 ? "break" : "breaks"} · lowers the score` : "no overrun"),
     breaksOk: (n) => `${n} breaks, none late`,
     perDay: "Minutes per day",
     perHour: "Minutes per hour",
