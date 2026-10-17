@@ -10,8 +10,8 @@ type NavKey = keyof Pick<Dict["nav"], "study" | "dashboard" | "ranking" | "categ
 
 const items: { href: string; key: NavKey; icon: string }[] = [
   { href: "/estudar", key: "study", icon: "M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" },
-  { href: "/registro", key: "categories", icon: "M4 6h16M4 12h16M4 18h10" },
   { href: "/dashboard", key: "dashboard", icon: "M4 19V10m6 9V5m6 14v-7m4 7H2" },
+  { href: "/registro", key: "categories", icon: "M4 6h16M4 12h16M4 18h10" },
   { href: "/historico", key: "history", icon: "M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5m4-1v5l3 2" },
   { href: "/ranking", key: "ranking", icon: "M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4a3 3 0 0 0 3 3m10-3h3a3 3 0 0 1-3 3" },
   { href: "/organizacao", key: "org", icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01" },
