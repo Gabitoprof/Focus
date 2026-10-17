@@ -141,19 +141,19 @@ export async function getDashboard(
       ? ctx.db
           .select({ id: categories.id, name: categories.name, color: categories.color })
           .from(categories)
-          .where(and(eq(categories.userId, userId), inArray(categories.id, catIds)))
+          .where(and(eq(categories.userId, userId), inArray(categories.id, catIds), isNull(categories.deletedAt)))
       : [],
     topicIds.length
       ? ctx.db
           .select({ id: topics.id, name: topics.name, categoryId: topics.categoryId })
           .from(topics)
-          .where(and(eq(topics.userId, userId), inArray(topics.id, topicIds)))
+          .where(and(eq(topics.userId, userId), inArray(topics.id, topicIds), isNull(topics.deletedAt)))
       : [],
     projectIds.length
       ? ctx.db
           .select({ id: projects.id, name: projects.name, color: projects.color })
           .from(projects)
-          .where(inArray(projects.id, projectIds))
+          .where(and(inArray(projects.id, projectIds), isNull(projects.deletedAt)))
       : [],
     taskIds.length
       ? ctx.db
@@ -373,11 +373,14 @@ export async function getDashboard(
     /** Só no filtro "Hoje": o dia hora a hora (segundos). */
     perHour,
     perDayExtra: [...extraByDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => ({ day, ...v })),
+    // Registros/temas excluídos não aparecem; menos de 1 min no período também não (evita "0min").
     byCategory: catRows
       .map((c) => ({ ...c, seconds: Math.floor(byCategory.get(c.id) ?? 0) }))
+      .filter((c) => c.seconds >= 60)
       .sort((a, b) => b.seconds - a.seconds),
     byTopic: topicRows
       .map((t) => ({ ...t, seconds: Math.floor(byTopic.get(t.id) ?? 0) }))
+      .filter((t) => t.seconds >= 60)
       .sort((a, b) => b.seconds - a.seconds),
   };
 }
