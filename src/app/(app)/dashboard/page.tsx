@@ -85,6 +85,27 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
           <span className="ml-auto text-xs text-text-2">{D.liveIncluded}</span>
         </Link>
       )}
+      {/* Gráfico no topo (logo abaixo da sessão em andamento); segue o período escolhido mais abaixo. */}
+      {!empty && (
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <h2 className="font-semibold">
+            {D.perDay} <span className="text-sm font-normal text-text-3">· {D.ranges[key]}</span>
+          </h2>
+          <p className="mb-4 text-xs text-text-2">{D.timezone(data.timezone)}</p>
+          <DailyChart data={data.perDay} extra={data.perDayExtra} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
+        </Card>
+        <Card>
+          <h2 className="mb-4 font-semibold">{D.byCategory}</h2>
+          {data.byCategory.length ? (
+            <CategoryBars data={data.byCategory} />
+          ) : (
+            <p className="text-sm text-text-2">{D.noStudy}</p>
+          )}
+        </Card>
+      </div>
+      )}
+
       <section aria-label={D.overview} className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label={D.totalStudied} value={formatDuration(tot.allTimeSeconds)} />
         <Stat label={D.today} value={formatDuration(tot.todaySeconds)} />
@@ -195,22 +216,6 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
               hint={p.breaks.penalties ? D.breaksLate(p.breaks.penalties, p.breaks.penaltyXp) : D.breaksOk(p.breaks.count)}
             />
           </section>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-              <h2 className="font-semibold">{D.perDay}</h2>
-              <p className="mb-4 text-xs text-text-2">{D.timezone(data.timezone)}</p>
-              <DailyChart data={data.perDay} extra={data.perDayExtra} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
-            </Card>
-            <Card>
-              <h2 className="mb-4 font-semibold">{D.byCategory}</h2>
-              {data.byCategory.length ? (
-                <CategoryBars data={data.byCategory} />
-              ) : (
-                <p className="text-sm text-text-2">{D.noStudy}</p>
-              )}
-            </Card>
-          </div>
 
           {/* Score de foco do período: pontos pela qualidade do foco (detalhe de cada parte). */}
           <section aria-label={D.score.title} className="rounded-xl border border-border bg-surface p-4">
