@@ -21,6 +21,7 @@ import {
   studySessions,
   topics,
 } from "../db/schema";
+import { computeScore } from "@/domain/score";
 import { getTimerSettings, secondsBetween, type Ctx } from "./common";
 import { notDeletedSession } from "./corrections";
 import { getTimerState } from "./timer";
@@ -199,6 +200,9 @@ export async function getDashboard(
       seconds: sql<number>`coalesce(sum(extract(epoch from (${breaks.endedAt} - ${breaks.startedAt}))), 0)::int`,
       penalties: sql<number>`count(*) filter (where ${breaks.penaltyXp} > 0)::int`,
       penaltyXp: sql<number>`coalesce(sum(${breaks.penaltyXp}), 0)::int`,
+      // Score: intervalos encerrados no tempo (sem penalidade) e atraso dos que passaram.
+      clean: sql<number>`count(*) filter (where ${breaks.status} = 'finished' and ${breaks.penaltyXp} = 0)::int`,
+      overrunSeconds: sql<number>`coalesce(sum(${breaks.overrunSeconds}) filter (where ${breaks.penaltyXp} > 0), 0)::int`,
     })
     .from(breaks)
     .innerJoin(studySessions, eq(studySessions.id, breaks.sessionId))
@@ -316,6 +320,13 @@ export async function getDashboard(
       pausedSessions: Number(period.pausedSessions) + (liveInRange && liveInRange.pausedSeconds > 0 ? 1 : 0),
       completedCycles: Number(period.completedCycles),
       xp: Number(period.xp),
+      score: computeScore({
+        activeSeconds: Number(period.activeSeconds) + (liveInRange?.activeSeconds ?? 0),
+        overtimeSeconds: Number(period.overtimeSeconds) + (liveInRange?.overtimeSeconds ?? 0),
+        pausedSeconds: Number(period.pausedSeconds) + (liveInRange?.pausedSeconds ?? 0),
+        cleanBreaks: Number(breakStats.clean),
+        breakOverrunSeconds: Number(breakStats.overrunSeconds),
+      }),
       breaks: {
         count: Number(breakStats.count),
         seconds: Number(breakStats.seconds),

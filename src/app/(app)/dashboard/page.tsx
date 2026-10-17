@@ -196,6 +196,42 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
             />
           </section>
 
+          {/* Score de foco do período: pontos pela qualidade do foco (detalhe de cada parte). */}
+          <section aria-label={D.score.title} className="rounded-xl border border-border bg-surface p-4">
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-3">
+              <div>
+                <p className="text-xs font-medium text-text-2">{D.score.title}</p>
+                <p className="mt-1 text-3xl font-semibold text-link tabular">{D.score.points(p.score.total)}</p>
+              </div>
+              <dl className="flex flex-wrap gap-2 text-xs">
+                {(
+                  [
+                    ["planned", p.score.planned],
+                    ["overtime", p.score.overtime],
+                    ["cleanBreaks", p.score.cleanBreaks],
+                    ["paused", p.score.paused],
+                    ["breakOverrun", p.score.breakOverrun],
+                  ] as const
+                ).map(([k, v]) => (
+                  <div key={k} className="rounded-lg bg-surface-2 px-2.5 py-1.5">
+                    <dt className="text-text-3">{D.score.parts[k]}</dt>
+                    <dd className={cx("font-medium tabular", v > 0 ? "text-good" : v < 0 ? "text-danger" : "text-text-2")}>
+                      {v > 0 ? `+${v}` : v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <details className="mt-3 text-xs text-text-2">
+              <summary className="cursor-pointer text-link">{D.score.howTitle}</summary>
+              <ul className="mt-2 list-disc space-y-0.5 pl-5">
+                {D.score.how.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </details>
+          </section>
+
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <h2 className="font-semibold">{D.perDay}</h2>
