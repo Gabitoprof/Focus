@@ -26,6 +26,10 @@
   --danger: #c0302f;
   --danger-soft: #fbe6e6;
   --break: #1baf7a;
+  /* Séries dos gráficos (validadas para daltonismo e contraste em cada tema). */
+  --chart-1: #274dea;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
 }
 
 /* Tokens do modo escuro: fundo preto, azul da marca para ação, azul claro para texto. */
@@ -48,6 +52,9 @@
     --danger: #e66767;
     --danger-soft: #2e1717;
     --break: #199e70;
+    --chart-1: #5b7cf0;
+    --chart-2: #d95926;
+    --chart-3: #199e70;
   }
 }
 

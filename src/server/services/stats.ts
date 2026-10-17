@@ -237,6 +237,59 @@ export async function getDashboard(
   }
   const liveInRange = live && now >= range.start && now <= range.end ? live : null;
 
+  // Séries por dia para o gráfico (além do estudado): planejado, excedente e pausas contam no dia
+  // em que a sessão terminou (como nos cards); intervalos, no dia em que terminaram.
+  const [endedRows, breakRows] = await Promise.all([
+    ctx.db
+      .select({
+        endedAt: studySessions.endedAt,
+        planned: studySessions.plannedSeconds,
+        overtime: studySessions.overtimeSeconds,
+        paused: studySessions.pausedSeconds,
+      })
+      .from(studySessions)
+      .where(
+        and(
+          eq(studySessions.userId, userId),
+          eq(studySessions.context, context),
+          gte(studySessions.endedAt, range.start),
+          lte(studySessions.endedAt, range.end),
+          notDeletedSession,
+        ),
+      ),
+    ctx.db
+      .select({ startedAt: breaks.startedAt, endedAt: breaks.endedAt })
+      .from(breaks)
+      .innerJoin(studySessions, eq(studySessions.id, breaks.sessionId))
+      .where(
+        and(
+          eq(breaks.userId, userId),
+          eq(studySessions.context, context),
+          gte(breaks.endedAt, range.start),
+          lte(breaks.endedAt, range.end),
+        ),
+      ),
+  ]);
+  const extraByDay = new Map<string, { planned: number; overtime: number; paused: number; breaks: number }>();
+  const bucket = (day: string) => {
+    let b = extraByDay.get(day);
+    if (!b) extraByDay.set(day, (b = { planned: 0, overtime: 0, paused: 0, breaks: 0 }));
+    return b;
+  };
+  for (const r of endedRows) {
+    const b = bucket(localDayKey(r.endedAt!, tz));
+    b.planned += r.planned;
+    b.overtime += r.overtime;
+    b.paused += r.paused;
+  }
+  for (const r of breakRows) bucket(localDayKey(r.endedAt!, tz)).breaks += secondsBetween(r.startedAt, r.endedAt!);
+  if (liveInRange) {
+    const b = bucket(localDayKey(now, tz));
+    b.planned += liveInRange.plannedSeconds;
+    b.overtime += liveInRange.overtimeSeconds;
+    b.paused += liveInRange.pausedSeconds;
+  }
+
   return {
     timezone: tz,
     live,
@@ -271,6 +324,8 @@ export async function getDashboard(
       },
     },
     perDay: [...perDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, seconds]) => ({ day, seconds })),
+    /** Planejado, excedente, pausas e intervalos por dia (segundos), para as linhas extras do gráfico. */
+    perDayExtra: [...extraByDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => ({ day, ...v })),
     byCategory: catRows
       .map((c) => ({ ...c, seconds: Math.floor(byCategory.get(c.id) ?? 0) }))
       .sort((a, b) => b.seconds - a.seconds),
