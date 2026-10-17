@@ -196,7 +196,8 @@ async function main() {
     alias: "Colégio Horizonte",
     requesterUserId: escola,
     requesterRole: "Diretora",
-    contactEmail: "diretoria.colegiohorizonte@gmail.com",
+    // Domínio reservado para exemplos (RFC 2606): não pertence a ninguém.
+    contactEmail: "diretoria@colegiohorizonte.example",
     message: "Somos uma escola de ensino médio e queremos acompanhar os alunos no ENEM. (Demonstração.)",
     status: "pending_review",
     checks: { ...CHECKS, corporateDomain: false, domainMatchesCnpj: false },

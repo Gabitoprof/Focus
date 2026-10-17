@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Focus</title>
+  <meta name="description" content="Foque no que importa. Evolua todo dia. Cronômetro com método, horas que se comprovam e rankings justos — para você, sua turma ou sua empresa." />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Mesmos tokens da plataforma (src/app/globals.css). */
+    :root {
+      color-scheme: light;
+      --brand: #274dea;
+      --black: #0a0a0a;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-2: #f5f5f5;
+      --border: #e8e8e8;
+      --text: #0a0a0a;
+      --text-2: #525252;
+      --text-3: #8a8a8a;
+      --accent: #274dea;
+      --accent-ink: #ffffff;
+      --link: #274dea;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #000000;
+        --surface: #0a0a0a;
+        --surface-2: #171717;
+        --border: #262626;
+        --text: #fafafa;
+        --text-2: #a3a3a3;
+        --text-3: #737373;
+        --link: #8fa4f7;
+      }
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --surface-2: #171717;
+      --border: #262626;
+      --text: #fafafa;
+      --text-2: #a3a3a3;
+      --text-3: #737373;
+      --link: #8fa4f7;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 72rem; margin: 0 auto; padding: 0 16px; }
+
+    /* Topo em preto, como na plataforma ("ilha" escura). */
+    .hero {
+      background: var(--black);
+      color: #fafafa;
+      --text-2: #a3a3a3;
+      --border: #262626;
+    }
+    .bar { display: flex; align-items: center; justify-content: space-between; padding: 24px 0; gap: 12px; }
+    .logo { color: var(--brand); font-weight: 600; font-size: 1.5rem; letter-spacing: -0.02em; text-decoration: none; }
+    .pill-btn {
+      display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 999px;
+      font-weight: 500; font-size: 0.9rem; text-decoration: none; white-space: nowrap;
+    }
+    .pill-btn.primary { background: var(--accent); color: var(--accent-ink); }
+    .pill-btn.primary:hover { opacity: 0.9; }
+    .pill-btn.ghost { border: 1px solid var(--border); }
+    .pill-btn.ghost:hover { background: #171717; }
+    .hero-body { padding: 64px 0 96px; }
+    h1 {
+      margin: 0; max-width: 48rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05;
+      font-size: clamp(2.6rem, 8vw, 4.5rem);
+    }
+    h1 span { color: var(--brand); }
+    .subtitle { margin: 24px 0 0; max-width: 36rem; font-size: 1.125rem; color: var(--text-2); }
+    .audience {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 16px; border-radius: 999px;
+      background: #141c3d; color: #8fa4f7; font-weight: 600;
+    }
+    .audience::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--accent); }
+    .cta { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .cta .pill-btn { height: 48px; padding: 0 28px; font-size: 1rem; }
+    .soon { font-size: 0.85rem; color: var(--text-2); }
+
+    main { padding: 80px 0; }
+    .features { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .features .n { font-size: 0.85rem; font-weight: 600; color: var(--link); font-variant-numeric: tabular-nums; }
+    .features h2 { margin: 12px 0 0; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; }
+    .features p { margin: 8px 0 0; color: var(--text-2); }
+
+    .for { margin-top: 80px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { border: 1px solid var(--border); background: var(--surface); border-radius: 16px; padding: 24px; }
+    .card h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+    .card p { margin: 8px 0 0; color: var(--text-2); font-size: 0.95rem; }
+
+    footer { border-top: 1px solid var(--border); }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 32px; padding-bottom: 32px; font-size: 0.9rem; color: var(--text-3); }
+    footer .logo { font-size: 1.125rem; }
+    footer a { color: var(--link); }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="bar">
+        <a class="logo" href="./" aria-label="Focus — início">Focus</a>
+        <a class="pill-btn ghost" href="https://github.com/Gabitoprof/Focus">Ver no GitHub</a>
+      </div>
+      <section class="hero-body">
+        <h1>Foque no que importa.<br /><span>Evolua todo dia.</span></h1>
+        <p class="subtitle">Estudos, projetos pessoais e equipes: cronômetro com método, horas que se comprovam e rankings justos.</p>
+        <p class="audience">Para você, sua turma ou sua empresa.</p>
+        <div class="cta">
+          <span class="pill-btn primary" aria-disabled="true">Em breve</span>
+          <span class="soon">A plataforma está em desenvolvimento.</span>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <ol class="features">
+      <li>
+        <span class="n">01</span>
+        <h2>Ciclos de foco</h2>
+        <p>Pomodoro clássico, Estudo personalizado ou Deep Work. O tempo excedente também é registrado.</p>
+      </li>
+      <li>
+        <span class="n">02</span>
+        <h2>Horas reais</h2>
+        <p>Registros, temas, pausas e intervalos salvos no servidor, em qualquer dispositivo.</p>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <h2>XP e score de foco</h2>
+        <p>Cada ciclo concluído vale XP. Respeitar o intervalo soma pontos; pausas e atrasos tiram.</p>
+      </li>
+      <li>
+        <span class="n">04</span>
+        <h2>Projetos com cronograma</h2>
+        <p>Horas a cumprir, tarefas, responsáveis e um gráfico de Gantt com fases e dependências.</p>
+      </li>
+      <li>
+        <span class="n">05</span>
+        <h2>Rankings justos</h2>
+        <p>Por período, área do conhecimento e instituição, só com horas comprovadas pelo cronômetro.</p>
+      </li>
+      <li>
+        <span class="n">06</span>
+        <h2>Conquistas</h2>
+        <p>Metas de constância, horas e método, com o caminho para desbloquear cada uma.</p>
+      </li>
+    </ol>
+
+    <section class="for" aria-label="Para quem">
+      <div class="card">
+        <h3>Para você</h3>
+        <p>Organize estudos e projetos pessoais, acompanhe sua evolução e mantenha a sequência de dias.</p>
+      </div>
+      <div class="card">
+        <h3>Para sua turma</h3>
+        <p>Instituições verificadas por CNPJ acompanham os alunos, criam projetos e veem o ranking interno.</p>
+      </div>
+      <div class="card">
+        <h3>Para sua empresa</h3>
+        <p>Projetos por área, banco de horas e privacidade: a empresa vê só o perfil profissional.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span class="logo">Focus</span>
+      <a href="https://github.com/Gabitoprof/Focus">github.com/Gabitoprof/Focus</a>
+      <span>© Focus</span>
+    </div>
+  </footer>
+</body>
+</html>
