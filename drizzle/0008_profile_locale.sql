@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ADD COLUMN "locale" text DEFAULT 'pt-BR' NOT NULL;
