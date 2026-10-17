@@ -1,5 +1,5 @@
 import { TZDate } from "@date-fns/tz";
-import { addDays, format, startOfDay, startOfISOWeek, startOfMonth } from "date-fns";
+import { addDays, addHours, format, startOfDay, startOfHour, startOfISOWeek, startOfMonth } from "date-fns";
 
 export const RANGE_KEYS = ["today", "7d", "30d", "month", "custom"] as const;
 export type RangeKey = (typeof RANGE_KEYS)[number];
@@ -70,6 +70,36 @@ export function secondsByLocalDay(
       const sliceEnd = Math.min(end, nextMidnight);
       const key = localDayKey(new Date(start), tz);
       out.set(key, (out.get(key) ?? 0) + (sliceEnd - start) / 1000);
+      start = sliceEnd;
+    }
+  }
+  for (const [k, v] of out) out.set(k, Math.floor(v));
+  return out;
+}
+
+/** Hora local (0–23) de um instante, no fuso `tz`. */
+export function localHour(date: Date, tz: string): number {
+  return new TZDate(date.getTime(), tz).getHours();
+}
+
+/**
+ * Como `secondsByLocalDay`, mas por hora local (0–23), para o gráfico de "Hoje".
+ * Um estudo das 14:40 às 15:20 conta 20 min para as 14h e 20 min para as 15h.
+ */
+export function secondsByLocalHour(intervals: { start: Date; end: Date }[], tz: string, clip?: Range): Map<number, number> {
+  const out = new Map<number, number>();
+  for (const it of intervals) {
+    let start = it.start.getTime();
+    let end = it.end.getTime();
+    if (clip) {
+      start = Math.max(start, clip.start.getTime());
+      end = Math.min(end, clip.end.getTime());
+    }
+    while (start < end) {
+      const nextHour = addHours(startOfHour(new TZDate(start, tz)), 1).getTime();
+      const sliceEnd = Math.min(end, nextHour);
+      const h = localHour(new Date(start), tz);
+      out.set(h, (out.get(h) ?? 0) + (sliceEnd - start) / 1000);
       start = sliceEnd;
     }
   }

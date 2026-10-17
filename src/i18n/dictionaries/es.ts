@@ -350,6 +350,7 @@ export const es: Dict = {
     breaksLate: (n, xp) => `${n} excedidos (−${xp} XP)`,
     breaksOk: (n) => `${n} intervalos, sin retraso`,
     perDay: "Minutos por día",
+    perHour: "Minutos por hora",
     timezone: (tz) => `Zona horaria: ${tz}`,
     byCategory: "Tiempo por registro",
     byTopic: "Tiempo por tema",
@@ -378,6 +379,7 @@ export const es: Dict = {
     chartPick: "Líneas del gráfico",
     chartSeries: { studied: "Estudiado", planned: "Planificado", overtime: "Excedente", paused: "Pausas", breaks: "Intervalos" },
     chartSeriesHint: "Planificado, excedente y pausas cuentan el día en que terminó la sesión.",
+    chartSeriesHintHour: "Planificado, excedente y pausas cuentan en la hora en que terminó la sesión.",
   },
   history: {
     title: "Historial",

@@ -66,12 +66,15 @@ function ChartTooltip({
 export function DailyChart({
   data,
   extra,
+  hourly = null,
   rangeStart,
   rangeEnd,
   timezone,
 }: {
   data: { day: string; seconds: number }[];
   extra: { day: string; planned: number; overtime: number; paused: number; breaks: number }[];
+  /** Só no filtro "Hoje": minutos hora a hora. */
+  hourly?: { hour: number; studied: number; planned: number; overtime: number; paused: number; breaks: number }[] | null;
   rangeStart: string;
   rangeEnd: string;
   timezone: string;
@@ -100,6 +103,23 @@ export function DailyChart({
   };
 
   const rows = useMemo(() => {
+    const min = (s: number | undefined) => Math.round((s ?? 0) / 60);
+    // "Hoje": o dia hora a hora (um ponto só não forma linha).
+    if (hourly) {
+      return hourly.map((h): Row => {
+        const hh = `${String(h.hour).padStart(2, "0")}h`;
+        return {
+          day: hh,
+          label: `${String(h.hour).padStart(2, "0")}:00–${String(h.hour).padStart(2, "0")}:59`,
+          short: hh,
+          studied: min(h.studied),
+          planned: min(h.planned),
+          overtime: min(h.overtime),
+          paused: min(h.paused),
+          breaks: min(h.breaks),
+        };
+      });
+    }
     const byDay = new Map(data.map((d) => [d.day, d.seconds]));
     const extraByDay = new Map(extra.map((d) => [d.day, d]));
     const out: Row[] = [];
@@ -108,7 +128,6 @@ export function DailyChart({
     // Datas no formato do idioma (dd/mm em português/espanhol, mm/dd em inglês).
     const fmtLong = new Intl.DateTimeFormat(INTL_LOCALE[locale], { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
     const fmtShort = new Intl.DateTimeFormat(INTL_LOCALE[locale], { day: "2-digit", month: "2-digit", timeZone: "UTC" });
-    const min = (s: number | undefined) => Math.round((s ?? 0) / 60);
     for (let ms = Date.parse(rangeStart); ms < end && out.length < 400; ms += 6 * 3600_000) {
       const key = localDayKey(new Date(ms), timezone);
       if (seen.has(key)) continue;
@@ -128,7 +147,7 @@ export function DailyChart({
       });
     }
     return out;
-  }, [data, extra, rangeStart, rangeEnd, timezone, locale]);
+  }, [data, extra, hourly, rangeStart, rangeEnd, timezone, locale]);
 
   // Rótulos nos pontos só com a linha "estudado" sozinha (com várias linhas, a dica ao passar o mouse
   // mostra todos os valores). Até 10 dias, em todos os pontos; senão, no maior e no último.
@@ -222,7 +241,7 @@ export function DailyChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      {shown.some((k) => k === "planned" || k === "overtime" || k === "paused") && <p className="text-xs text-text-3">{D.chartSeriesHint}</p>}
+      {shown.some((k) => k === "planned" || k === "overtime" || k === "paused") && <p className="text-xs text-text-3">{hourly ? D.chartSeriesHintHour : D.chartSeriesHint}</p>}
     </div>
   );
 }

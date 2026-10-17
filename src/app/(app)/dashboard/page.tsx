@@ -90,10 +90,10 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <h2 className="font-semibold">
-            {D.perDay} <span className="text-sm font-normal text-text-3">· {D.ranges[key]}</span>
+            {data.perHour ? D.perHour : D.perDay} <span className="text-sm font-normal text-text-3">· {D.ranges[key]}</span>
           </h2>
           <p className="mb-4 text-xs text-text-2">{D.timezone(data.timezone)}</p>
-          <DailyChart data={data.perDay} extra={data.perDayExtra} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
+          <DailyChart data={data.perDay} extra={data.perDayExtra} hourly={data.perHour} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
         </Card>
         <Card>
           <h2 className="mb-4 font-semibold">{D.byCategory}</h2>

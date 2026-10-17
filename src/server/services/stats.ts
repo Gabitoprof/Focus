@@ -3,8 +3,10 @@ import {
   clippedSeconds,
   computeStreaks,
   localDayKey,
+  localHour,
   resolveRange,
   secondsByLocalDay,
+  secondsByLocalHour,
   weekRange,
   type Range,
   type RangeKey,
@@ -294,6 +296,37 @@ export async function getDashboard(
     b.paused += liveInRange.pausedSeconds;
   }
 
+  // "Hoje": um ponto só não forma linha; o gráfico mostra o dia hora a hora.
+  let perHour: null | { hour: number; studied: number; planned: number; overtime: number; paused: number; breaks: number }[] = null;
+  if (filter.key === "today") {
+    const studiedByHour = secondsByLocalHour(segs.map((s) => ({ start: s.start, end: s.end })), tz, range);
+    const hours = new Map<number, { studied: number; planned: number; overtime: number; paused: number; breaks: number }>();
+    const at = (h: number) => {
+      let v = hours.get(h);
+      if (!v) hours.set(h, (v = { studied: 0, planned: 0, overtime: 0, paused: 0, breaks: 0 }));
+      return v;
+    };
+    for (const [h, sec] of studiedByHour) at(h).studied += sec;
+    for (const r of endedRows) {
+      const v = at(localHour(r.endedAt!, tz));
+      v.planned += r.planned;
+      v.overtime += r.overtime;
+      v.paused += r.paused;
+    }
+    for (const r of breakRows) at(localHour(r.endedAt!, tz)).breaks += secondsBetween(r.startedAt, r.endedAt!);
+    if (liveInRange) {
+      const v = at(localHour(now, tz));
+      v.planned += liveInRange.plannedSeconds;
+      v.overtime += liveInRange.overtimeSeconds;
+      v.paused += liveInRange.pausedSeconds;
+    }
+    // Da primeira hora com registro (no máximo 6h antes de agora, se não houver nada) até a hora atual.
+    const nowHour = localHour(now, tz);
+    const first = Math.min(nowHour, ...[...hours.keys()], Math.max(0, nowHour - 6));
+    perHour = [];
+    for (let h = first; h <= nowHour; h++) perHour.push({ hour: h, ...(hours.get(h) ?? { studied: 0, planned: 0, overtime: 0, paused: 0, breaks: 0 }) });
+  }
+
   return {
     timezone: tz,
     live,
@@ -336,6 +369,8 @@ export async function getDashboard(
     },
     perDay: [...perDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, seconds]) => ({ day, seconds })),
     /** Planejado, excedente, pausas e intervalos por dia (segundos), para as linhas extras do gráfico. */
+    /** Só no filtro "Hoje": o dia hora a hora (segundos). */
+    perHour,
     perDayExtra: [...extraByDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => ({ day, ...v })),
     byCategory: catRows
       .map((c) => ({ ...c, seconds: Math.floor(byCategory.get(c.id) ?? 0) }))

@@ -355,6 +355,7 @@ export const en: Dict = {
     breaksLate: (n, xp) => `${n} exceeded (−${xp} XP)`,
     breaksOk: (n) => `${n} breaks, none late`,
     perDay: "Minutes per day",
+    perHour: "Minutes per hour",
     timezone: (tz) => `Time zone: ${tz}`,
     byCategory: "Time by log",
     byTopic: "Time by topic",
@@ -383,6 +384,7 @@ export const en: Dict = {
     chartPick: "Chart lines",
     chartSeries: { studied: "Studied", planned: "Planned", overtime: "Overtime", paused: "Pauses", breaks: "Breaks" },
     chartSeriesHint: "Planned, overtime and pauses count on the day the session ended.",
+    chartSeriesHintHour: "Planned, overtime and pauses count in the hour the session ended.",
   },
   history: {
     title: "History",

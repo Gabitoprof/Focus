@@ -356,6 +356,7 @@ export const ptBR = {
     breaksLate: (n: number, xp: number) => `${n} excedidos (−${xp} XP)`,
     breaksOk: (n: number) => `${n} intervalos, sem atraso`,
     perDay: "Minutos por dia",
+    perHour: "Minutos por hora",
     timezone: (tz: string) => `Fuso: ${tz}`,
     byCategory: "Tempo por registro",
     byTopic: "Tempo por tema",
@@ -384,6 +385,7 @@ export const ptBR = {
     chartPick: "Linhas do gráfico",
     chartSeries: { studied: "Estudado", planned: "Planejado", overtime: "Excedente", paused: "Pausas", breaks: "Intervalos" },
     chartSeriesHint: "Planejado, excedente e pausas contam no dia em que a sessão terminou.",
+    chartSeriesHintHour: "Planejado, excedente e pausas contam na hora em que a sessão terminou.",
   },
   history: {
     title: "Histórico",
