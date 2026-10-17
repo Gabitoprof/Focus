@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatDuration, localDayKey } from "@/domain/time";
 import { INTL_LOCALE } from "@/i18n";
 import { useI18n } from "@/i18n/client";
@@ -50,16 +50,52 @@ export function DailyChart({
     return out;
   }, [data, rangeStart, rangeEnd, timezone, locale]);
 
+  // Rótulo em todos os pontos só quando cabem (até 10 dias); senão, só o maior e o último.
+  const labeled = useMemo(() => {
+    if (rows.length <= 10) return new Set(rows.map((_, i) => i).filter((i) => rows[i].minutes > 0));
+    let max = 0;
+    rows.forEach((r, i) => {
+      if (r.minutes > rows[max].minutes) max = i;
+    });
+    return new Set([max, rows.length - 1].filter((i) => rows[i].minutes > 0));
+  }, [rows]);
+
   return (
     <div className="h-64" role="img" aria-label={t.dashboard.chartLabel(rows.map((r) => `${r.short} ${r.minutes} min`).join(", "))}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={rows} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+        <AreaChart data={rows} margin={{ top: 24, right: 20, left: -16, bottom: 0 }}>
+          <defs>
+            <linearGradient id="daily-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.45} />
+              <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
           <CartesianGrid vertical={false} stroke="var(--border)" />
           <XAxis dataKey="short" tick={axisTick} tickLine={false} axisLine={{ stroke: "var(--border)" }} minTickGap={12} />
           <YAxis tick={axisTick} tickLine={false} axisLine={false} allowDecimals={false} width={48} />
-          <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--surface-2)" }} />
-          <Bar dataKey="minutes" fill="var(--accent)" radius={[4, 4, 0, 0]} maxBarSize={28} />
-        </BarChart>
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: "var(--text-3)", strokeDasharray: "3 3" }} />
+          <Area
+            type="monotone"
+            dataKey="minutes"
+            stroke="var(--accent)"
+            strokeWidth={2}
+            fill="url(#daily-fill)"
+            dot={rows.length <= 14 ? { r: 4, fill: "var(--accent)", stroke: "var(--surface)", strokeWidth: 2 } : false}
+            activeDot={{ r: 6, fill: "var(--accent)", stroke: "var(--surface)", strokeWidth: 2 }}
+            isAnimationActive={false}
+          >
+            <LabelList
+              dataKey="minutes"
+              content={({ x, y, value, index }) =>
+                typeof index === "number" && labeled.has(index) ? (
+                  <text x={Number(x)} y={Number(y) - 12} textAnchor="middle" fill="var(--text-2)" fontSize={11} className="tabular">
+                    {formatDuration(Number(value) * 60)}
+                  </text>
+                ) : null
+              }
+            />
+          </Area>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
