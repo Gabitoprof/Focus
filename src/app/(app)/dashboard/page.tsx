@@ -23,7 +23,19 @@ export default async function DashboardPage(props: PageProps<"/dashboard">) {
   const { t } = await getI18n();
   return (
     <>
-      <PageHeader title={t.dashboard.title} description={t.dashboard.description} />
+      <PageHeader
+        title={t.dashboard.title}
+        description={t.dashboard.description}
+        actions={
+          <Link
+            href="/retrospectiva"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink hover:opacity-90"
+          >
+            <span aria-hidden>✦</span>
+            {t.retro.open}
+          </Link>
+        }
+      />
       <Suspense fallback={<Skeleton className="h-[600px]" />}>
         <Content searchParams={props.searchParams} />
       </Suspense>
@@ -96,6 +108,10 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
           <DailyChart data={data.perDay} extra={data.perDayExtra} hourly={data.perHour} rangeStart={data.range.start} rangeEnd={data.range.end} timezone={data.timezone} />
         </Card>
         <Card>
+          <div className="mb-5 grid grid-cols-2 gap-3">
+            <Stat label={D.totalStudied} value={formatDuration(tot.allTimeSeconds)} />
+            <Stat label={D.xp} value={d.user.xp(tot.xpBalance)} accent />
+          </div>
           <h2 className="mb-4 font-semibold">{D.byCategory}</h2>
           {data.byCategory.length ? (
             <CategoryBars data={data.byCategory} />
@@ -104,70 +120,6 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
           )}
         </Card>
       </div>
-      )}
-
-      <section aria-label={D.overview} className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label={D.totalStudied} value={formatDuration(tot.allTimeSeconds)} />
-        <Stat label={D.today} value={formatDuration(tot.todaySeconds)} />
-        <Stat label={D.thisWeek} value={formatDuration(tot.weekSeconds)} />
-        <Stat label={D.thisMonth} value={formatDuration(tot.monthSeconds)} />
-        <Stat label={D.xp} value={d.user.xp(tot.xpBalance)} accent />
-        <Stat label={D.cycles} value={String(tot.completedCycles)} hint={D.sessionsTotal(tot.sessions)} />
-        <Stat label={D.streak} value={d.common.days(tot.currentStreak)} hint={D.streakHint(d.common.days(tot.longestStreak))} />
-        {!academic ? (
-          <Link href="/ranking" className="rounded-xl border border-border bg-surface p-4 hover:border-accent">
-            <p className="text-xs font-medium text-text-2">{D.hoursBank}</p>
-            <p className="mt-1 text-2xl font-semibold tabular">{formatDuration(tot.allTimeSeconds)}</p>
-            <p className="mt-0.5 text-xs text-text-3">{D.hoursBankHint(d.contexts.names[context])}</p>
-          </Link>
-        ) : (
-        <Link href="/ranking" className="rounded-xl border border-border bg-surface p-4 hover:border-accent">
-          <p className="text-xs font-medium text-text-2">{D.rankingPosition}</p>
-          {position === null ? (
-            <>
-              <p className="mt-1 text-2xl font-semibold text-link">{D.rankingPremium}</p>
-              <p className="mt-0.5 text-xs text-text-3">{D.rankingPremiumHint}</p>
-            </>
-          ) : position.position === null ? (
-            <>
-              <p className="mt-1 text-2xl font-semibold">—</p>
-              <p className="mt-0.5 text-xs text-text-3">{D.rankingNone}</p>
-            </>
-          ) : (
-            <>
-              <p className="mt-1 text-2xl font-semibold tabular">{d.ranking.position(position.position)}</p>
-              <p className="mt-0.5 text-xs text-text-3">{D.rankingOf(position.participants)}</p>
-            </>
-          )}
-        </Link>
-        )}
-      </section>
-
-      {ranks && areaPositions && areaPositions.length > 0 && (
-        <section aria-label={D.areasTitle} className="rounded-xl border border-border bg-surface p-4">
-          <div className="mb-3 flex items-baseline justify-between gap-2">
-            <h2 className="font-semibold">{D.areasTitle}</h2>
-            <span className="text-xs text-text-3">{D.areasHint}</span>
-          </div>
-          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {areaPositions.map((a) => (
-              <li key={a.areaId}>
-                <Link
-                  href={`/ranking?escopo=filtro&area=${a.areaId}&periodo=semana`}
-                  className="block rounded-lg bg-surface-2 p-3 hover:bg-accent-soft"
-                >
-                  <p className="truncate text-xs text-text-2">{d.areas[a.areaId] ?? a.areaId}</p>
-                  <p className="mt-0.5 text-lg font-semibold tabular">
-                    {a.position ? d.ranking.position(a.position) : "—"}
-                  </p>
-                  <p className="text-xs text-text-3">
-                    {a.position ? D.rankingOf(a.participants) : D.areaInsufficient(a.participants, a.minParticipants)}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
       )}
 
       {empty ? (
@@ -253,6 +205,68 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
               </ul>
             </details>
           </section>
+
+          <section aria-label={D.overview} className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <Stat label={D.today} value={formatDuration(tot.todaySeconds)} />
+            <Stat label={D.thisWeek} value={formatDuration(tot.weekSeconds)} />
+            <Stat label={D.thisMonth} value={formatDuration(tot.monthSeconds)} />
+            <Stat label={D.cycles} value={String(tot.completedCycles)} hint={D.sessionsTotal(tot.sessions)} />
+            <Stat label={D.streak} value={d.common.days(tot.currentStreak)} hint={D.streakHint(d.common.days(tot.longestStreak))} />
+            {!academic ? (
+              <Link href="/ranking" className="rounded-xl border border-border bg-surface p-4 hover:border-accent">
+                <p className="text-xs font-medium text-text-2">{D.hoursBank}</p>
+                <p className="mt-1 text-2xl font-semibold tabular">{formatDuration(tot.allTimeSeconds)}</p>
+                <p className="mt-0.5 text-xs text-text-3">{D.hoursBankHint(d.contexts.names[context])}</p>
+              </Link>
+            ) : (
+            <Link href="/ranking" className="rounded-xl border border-border bg-surface p-4 hover:border-accent">
+              <p className="text-xs font-medium text-text-2">{D.rankingPosition}</p>
+              {position === null ? (
+                <>
+                  <p className="mt-1 text-2xl font-semibold text-link">{D.rankingPremium}</p>
+                  <p className="mt-0.5 text-xs text-text-3">{D.rankingPremiumHint}</p>
+                </>
+              ) : position.position === null ? (
+                <>
+                  <p className="mt-1 text-2xl font-semibold">—</p>
+                  <p className="mt-0.5 text-xs text-text-3">{D.rankingNone}</p>
+                </>
+              ) : (
+                <>
+                  <p className="mt-1 text-2xl font-semibold tabular">{d.ranking.position(position.position)}</p>
+                  <p className="mt-0.5 text-xs text-text-3">{D.rankingOf(position.participants)}</p>
+                </>
+              )}
+            </Link>
+            )}
+          </section>
+
+          {ranks && areaPositions && areaPositions.length > 0 && (
+            <section aria-label={D.areasTitle} className="rounded-xl border border-border bg-surface p-4">
+              <div className="mb-3 flex items-baseline justify-between gap-2">
+                <h2 className="font-semibold">{D.areasTitle}</h2>
+                <span className="text-xs text-text-3">{D.areasHint}</span>
+              </div>
+              <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {areaPositions.map((a) => (
+                  <li key={a.areaId}>
+                    <Link
+                      href={`/ranking?escopo=filtro&area=${a.areaId}&periodo=semana`}
+                      className="block rounded-lg bg-surface-2 p-3 hover:bg-accent-soft"
+                    >
+                      <p className="truncate text-xs text-text-2">{d.areas[a.areaId] ?? a.areaId}</p>
+                      <p className="mt-0.5 text-lg font-semibold tabular">
+                        {a.position ? d.ranking.position(a.position) : "—"}
+                      </p>
+                      <p className="text-xs text-text-3">
+                        {a.position ? D.rankingOf(a.participants) : D.areaInsufficient(a.participants, a.minParticipants)}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <Card>
             <h2 className="mb-4 font-semibold">{D.byTopic}</h2>

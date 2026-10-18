@@ -372,6 +372,11 @@ export async function getDashboard(
     /** Planejado, excedente, pausas e intervalos por dia (segundos), para as linhas extras do gráfico. */
     /** Só no filtro "Hoje": o dia hora a hora (segundos). */
     perHour,
+    /** Estudo do período somado por hora do dia (0–23), para achar o horário em que a pessoa mais rende. */
+    hourProfile: (() => {
+      const m = secondsByLocalHour(segs.map((s) => ({ start: s.start, end: s.end })), tz, range);
+      return Array.from({ length: 24 }, (_, h) => m.get(h) ?? 0);
+    })(),
     perDayExtra: [...extraByDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => ({ day, ...v })),
     // Registros/temas excluídos não aparecem; menos de 1 min no período também não (evita "0min").
     byCategory: catRows
