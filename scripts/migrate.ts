@@ -21,6 +21,8 @@ async function main() {
     await getDb(); // PGlite migra e semeia ao conectar
   }
   console.log("Migrações aplicadas.");
+  // O PGlite mantém o processo vivo; encerra ao terminar (o banco já foi salvo com CHECKPOINT).
+  process.exit(0);
 }
 
 main().catch((e) => {

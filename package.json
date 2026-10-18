@@ -20,7 +20,8 @@
     "catalog:import-cnpq": "tsx scripts/import-cnpq.ts",
     "demo:seed": "tsx --env-file=.env.local scripts/seed-demo.ts",
     "demo:schedule": "tsx --env-file=.env.local scripts/demo-schedule.ts",
-    "demo:tunnel": "node scripts/demo-tunnel.mjs"
+    "demo:tunnel": "node scripts/demo-tunnel.mjs",
+    "sync:account": "tsx scripts/sync-account-to-cloud.ts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
