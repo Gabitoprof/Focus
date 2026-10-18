@@ -64,7 +64,15 @@ export default async function Home() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-sm text-text-3">
           <Logo size="sm" />
           <LanguageSwitcher />
-          <span>© {BRAND.name}</span>
+          <span className="flex gap-4">
+            <Link href="/termos" className="hover:text-text-2">
+              {t.legal.terms}
+            </Link>
+            <Link href="/privacidade" className="hover:text-text-2">
+              {t.legal.privacy}
+            </Link>
+            <span>© {BRAND.name}</span>
+          </span>
         </div>
       </footer>
     </div>

@@ -162,6 +162,13 @@
       "when": 1792260529544,
       "tag": "0022_fix_sistemas_informacao_area",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792344782326,
+      "tag": "0023_terms_acceptance",
+      "breakpoints": true
     }
   ]
 }

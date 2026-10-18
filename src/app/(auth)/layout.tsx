@@ -28,8 +28,16 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
             <Logo size="lg" />
           </Link>
           {children}
-          <div className="mt-10 flex justify-center">
+          <div className="mt-10 flex flex-col items-center gap-3">
             <LanguageSwitcher />
+            <p className="flex gap-4 text-xs text-text-3">
+              <Link href="/termos" className="hover:text-text-2">
+                {t.legal.terms}
+              </Link>
+              <Link href="/privacidade" className="hover:text-text-2">
+                {t.legal.privacy}
+              </Link>
+            </p>
           </div>
         </div>
       </section>

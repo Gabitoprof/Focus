@@ -108,6 +108,9 @@ export const profiles = pgTable(
     activeContext: text("active_context", { enum: CONTEXTS }).notNull().default("academic"),
     /** Saldo de XP. Só o servidor altera, junto com uma linha em xp_transactions. */
     xpBalance: integer("xp_balance").notNull().default(0),
+    /** Aceite dos Termos de Uso e da Política de Privacidade (versão aceita e quando). */
+    termsVersion: text("terms_version"),
+    termsAcceptedAt: tsz("terms_accepted_at"),
     createdAt: tsz("created_at").notNull().defaultNow(),
     updatedAt: tsz("updated_at").notNull().defaultNow(),
   },

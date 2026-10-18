@@ -6,17 +6,24 @@ import { useState } from "react";
 import { Alert, Button, Input, Label } from "@/components/ui";
 import { useI18n } from "@/i18n/client";
 import { authClient } from "@/lib/auth-client";
+import { acceptTermsAction } from "@/app/actions/profile";
+import { TermsCheckbox } from "@/app/(app)/accept-terms-form";
 
 export default function SignUpPage() {
   const { t } = useI18n();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const password = String(form.get("password"));
+    if (!agreed) {
+      setError(t.legal.mustAgree);
+      return;
+    }
     if (password !== String(form.get("confirm"))) {
       setError(t.auth.passwordsDontMatch);
       return;
@@ -39,6 +46,8 @@ export default function SignUpPage() {
       );
       return;
     }
+    // Registra o aceite dos Termos e da Política (se falhar, o pedido de aceite aparece ao entrar).
+    await acceptTermsAction().catch(() => null);
     router.replace("/boas-vindas");
     router.refresh();
   }
@@ -65,7 +74,8 @@ export default function SignUpPage() {
         <Label htmlFor="confirm">{t.auth.confirmPassword}</Label>
         <Input id="confirm" name="confirm" type="password" required minLength={8} autoComplete="new-password" />
       </div>
-      <Button type="submit" className="w-full" disabled={pending}>
+      <TermsCheckbox checked={agreed} onChange={setAgreed} />
+      <Button type="submit" className="w-full" disabled={pending || !agreed}>
         {pending ? t.auth.creating : t.auth.createAccount}
       </Button>
       <p className="text-center text-sm text-text-2">

@@ -2,6 +2,15 @@
 export const FEATURES = ["ranking"] as const;
 export type Feature = (typeof FEATURES)[number];
 
+/**
+ * Recursos liberados para todos enquanto a Focus não cobra (fase de testes).
+ * Para começar a cobrar, esvazie esta lista. Nos testes automáticos a cobrança vale sempre
+ * (FOCUS_ENFORCE_PLANS=1), para a lógica de assinatura continuar verificada.
+ */
+export const FREE_DURING_TESTS: readonly Feature[] = ["ranking"];
+export const isFreeForEveryone = (feature: Feature) =>
+  process.env.FOCUS_ENFORCE_PLANS !== "1" && FREE_DURING_TESTS.includes(feature);
+
 export const SUBSCRIPTION_STATUSES = [
   "trialing",
   "active",

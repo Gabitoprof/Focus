@@ -10,6 +10,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // Os testes cobrem a cobrança como ela será (recursos pagos travados sem assinatura).
+    env: { FOCUS_ENFORCE_PLANS: "1" },
     include: ["tests/**/*.test.ts"],
     testTimeout: 30_000,
     hookTimeout: 60_000,

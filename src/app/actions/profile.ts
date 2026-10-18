@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { appCtx, requireUser } from "@/server/auth/session";
-import { updateProfile } from "@/server/services/profile";
+import { acceptTerms, updateProfile } from "@/server/services/profile";
 import { toResult } from "./result";
 
 const profileInput = z.object({
@@ -16,6 +16,15 @@ export async function updateProfileAction(input: z.input<typeof profileInput>) {
   return toResult(async () => {
     const user = await requireUser();
     await updateProfile(await appCtx(), user.id, profileInput.parse(input));
+    revalidatePath("/", "layout");
+  });
+}
+
+/** Aceite dos Termos de Uso e da Política de Privacidade (versão vigente). */
+export async function acceptTermsAction() {
+  return toResult(async () => {
+    const user = await requireUser();
+    await acceptTerms(await appCtx(), user.id);
     revalidatePath("/", "layout");
   });
 }

@@ -1,3 +1,4 @@
+import { TERMS_VERSION } from "@/domain/legal";
 import { randomBytes } from "node:crypto";
 import { and, eq, isNull } from "drizzle-orm";
 import { DEFAULT_CONTEXT, isAppContext, type AppContext } from "@/domain/contexts";
@@ -98,4 +99,12 @@ export async function setActiveContext(ctx: Ctx, userId: string, context: AppCon
     throw new AppError("Este perfil é liberado quando uma instituição ou empresa aceitar você.", "forbidden");
   }
   await ctx.db.update(profiles).set({ activeContext: context, updatedAt: ctx.now() }).where(eq(profiles.userId, userId));
+}
+
+/** Registra o aceite da versão vigente dos Termos de Uso e da Política de Privacidade. */
+export async function acceptTerms(ctx: Ctx, userId: string) {
+  await ctx.db
+    .update(profiles)
+    .set({ termsVersion: TERMS_VERSION, termsAcceptedAt: ctx.now() })
+    .where(eq(profiles.userId, userId));
 }

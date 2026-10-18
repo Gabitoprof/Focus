@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
-import { subscriptionGrantsAccess, type Feature, type SubscriptionStatus } from "@/domain/entitlements";
+import { isFreeForEveryone, subscriptionGrantsAccess, type Feature, type SubscriptionStatus } from "@/domain/entitlements";
 import { plans, subscriptions } from "../db/schema";
 import { AppError, type Ctx } from "./common";
 import { isAdmin } from "./profile";
 
-export type Access = { allowed: boolean; reason: "admin" | "subscription" | "none" };
+export type Access = { allowed: boolean; reason: "admin" | "subscription" | "free" | "none" };
 
 /**
  * Verificação de acesso a um recurso pago, sempre no servidor.
@@ -12,6 +12,7 @@ export type Access = { allowed: boolean; reason: "admin" | "subscription" | "non
  */
 export async function getAccess(ctx: Ctx, userId: string, feature: Feature): Promise<Access> {
   if (await isAdmin(ctx.db, userId)) return { allowed: true, reason: "admin" };
+  if (isFreeForEveryone(feature)) return { allowed: true, reason: "free" };
   const now = ctx.now();
   const subs = await ctx.db
     .select({ status: subscriptions.status, currentPeriodEnd: subscriptions.currentPeriodEnd, features: plans.features })

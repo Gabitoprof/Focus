@@ -6,6 +6,7 @@ import { GlobalTimerShortcuts } from "@/components/timer-shortcuts";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { getI18n } from "@/i18n/server";
 import { ContextSwitcher } from "./context-switcher";
+import { TermsGate } from "./terms-gate";
 import { AppNav, MobileNav } from "./nav";
 import { AppNavWithRoles } from "./nav-server";
 import { UserChip } from "./user-chip";
@@ -29,6 +30,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </Suspense>
         <div className="mt-auto space-y-3">
           <LanguageSwitcher className="px-3" />
+          <p className="flex gap-3 px-3 text-[11px] text-text-3">
+            <Link href="/termos" className="hover:text-text-2">
+              {t.legal.terms}
+            </Link>
+            <Link href="/privacidade" className="hover:text-text-2">
+              {t.legal.privacy}
+            </Link>
+          </p>
           <Suspense fallback={<div className="h-14" />}>
             <UserChip />
           </Suspense>
@@ -48,7 +57,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </Suspense>
       </div>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10 md:pt-8">
-        <ConfirmProvider>{children}</ConfirmProvider>
+        <ConfirmProvider>
+          <Suspense fallback={null}>
+            <TermsGate>{children}</TermsGate>
+          </Suspense>
+        </ConfirmProvider>
       </main>
       {/* Atalhos do cronômetro em qualquer tela (configuráveis no Foque → Configurações). */}
       <GlobalTimerShortcuts />
