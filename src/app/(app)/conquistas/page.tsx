@@ -123,11 +123,13 @@ async function Content() {
                           <span className="font-medium">{A.how}</span> {info.how}
                         </p>
                       </div>
-                      {a.unlocked && (
-                        <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-ink">{A.unlocked}</span>
-                      )}
                     </div>
-                    {a.unlocked && <ShowcaseToggle id={a.id} name={info.name} showcase={showcase} />}
+                    {a.unlocked && (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-ink">{A.unlocked}</span>
+                        <ShowcaseToggle id={a.id} name={info.name} showcase={showcase} />
+                      </div>
+                    )}
                     {!a.unlocked && (
                       <div>
                         <div className="h-1.5 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label={info.name}>
