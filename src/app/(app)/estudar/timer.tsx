@@ -15,6 +15,7 @@ import {
 } from "@/app/actions/timer";
 import { updateProfileAction } from "@/app/actions/profile";
 import type { ActionResult } from "@/app/actions/result";
+import { SHORTCUT_EVENT, ShortcutEditor, type ShortcutAction } from "@/components/timer-shortcuts";
 import { Alert, Button, Input, Label, Select, cx } from "@/components/ui";
 import type { MethodRules } from "@/domain/methods";
 import { projectKey, subjectFromSelection } from "@/domain/contexts";
@@ -372,6 +373,40 @@ export function Timer({
 
   const breakInfo = state.lastSession?.nextBreak;
   const toleranceLeft = brk ? Math.max(0, brk.toleranceSeconds - overtime) : 0;
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Atalhos de teclado (Configurações): nesta tela, o cronômetro executa com a seleção atual.
+  const onShortcut = useRef<(a: ShortcutAction) => boolean>(() => false);
+  useEffect(() => {
+    onShortcut.current = (a) => {
+      if (pending) return true;
+      if (a === "start") {
+        if (mode === "idle" && sel.topicId) void act(() => startSessionAction(startInput()));
+        else if (mode === "paused" && session) void act(() => resumeSessionAction(session.id));
+        else if ((mode === "break" || mode === "break_over") && brk && sel.topicId) void act(() => finishBreakAction(brk.id, startInput()));
+        return true;
+      }
+      if (a === "pause") {
+        if ((mode === "study" || mode === "overtime") && session) void act(() => pauseSessionAction(session.id));
+        else if (mode === "paused" && session) void act(() => resumeSessionAction(session.id));
+        return true;
+      }
+      if ((mode === "study" || mode === "overtime" || mode === "paused") && session)
+        void act(() => finishSessionAction(session.id, { startBreak: true, breakMinutes: sel.breakMinutes }));
+      else if ((mode === "break" || mode === "break_over") && brk) void act(() => finishBreakAction(brk.id));
+      else if (mode === "idle" && state.lastSession?.canStartBreak && breakInfo)
+        void act(() => startBreakAction(breakInfo.fixedMinutes ?? sel.breakMinutes));
+      return true;
+    };
+  });
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const action = (e as CustomEvent<{ action: ShortcutAction }>).detail?.action;
+      if (action && onShortcut.current(action)) e.preventDefault();
+    };
+    window.addEventListener(SHORTCUT_EVENT, handler);
+    return () => window.removeEventListener(SHORTCUT_EVENT, handler);
+  }, []);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
@@ -642,13 +677,40 @@ export function Timer({
           </fieldset>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface p-5">
-          <h2 className="mb-3 font-semibold">{t.study.alarm}</h2>
-          <Label htmlFor="volume">{t.study.volume(volume)}</Label>
-          <input id="volume" type="range" min={0} max={100} value={volume} onChange={(e) => onVolume(Number(e.target.value))} className="w-full accent-[var(--accent)]" />
-          <Button variant="secondary" size="sm" className="mt-3" onClick={() => void (ringing ? playAlarm(true) : playAlarm(false))}>
-            {t.study.testAudio}
-          </Button>
+        {/* Configurações: alarme e atalhos de teclado. */}
+        <div className="rounded-xl border border-border bg-surface">
+          <button
+            type="button"
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen((v) => !v)}
+            className="flex w-full items-center justify-between gap-2 px-5 py-4 text-left font-semibold"
+          >
+            <span className="flex items-center gap-2">
+              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+              </svg>
+              {t.study.settings}
+            </span>
+            <span aria-hidden className="text-text-3">{settingsOpen ? "−" : "+"}</span>
+          </button>
+          {settingsOpen && (
+            <div className="space-y-5 border-t border-border px-5 py-4">
+              <section>
+                <h3 className="mb-2 text-sm font-semibold">{t.study.alarm}</h3>
+                <Label htmlFor="volume">{t.study.volume(volume)}</Label>
+                <input id="volume" type="range" min={0} max={100} value={volume} onChange={(e) => onVolume(Number(e.target.value))} className="w-full accent-[var(--accent)]" />
+                <Button variant="secondary" size="sm" className="mt-3" onClick={() => void (ringing ? playAlarm(true) : playAlarm(false))}>
+                  {t.study.testAudio}
+                </Button>
+              </section>
+              <section>
+                <h3 className="mb-1 text-sm font-semibold">{t.study.shortcutsTitle}</h3>
+                <p className="mb-3 text-xs text-text-3">{t.study.shortcutsHint}</p>
+                <ShortcutEditor />
+              </section>
+            </div>
+          )}
         </div>
       </aside>
     </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Logo } from "@/components/brand";
 import { ConfirmProvider } from "@/components/confirm";
+import { GlobalTimerShortcuts } from "@/components/timer-shortcuts";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { getI18n } from "@/i18n/server";
 import { ContextSwitcher } from "./context-switcher";
@@ -49,6 +50,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10 md:pt-8">
         <ConfirmProvider>{children}</ConfirmProvider>
       </main>
+      {/* Atalhos do cronômetro em qualquer tela (configuráveis no Foque → Configurações). */}
+      <GlobalTimerShortcuts />
       <MobileNav />
     </div>
   );
