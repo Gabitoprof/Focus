@@ -175,7 +175,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/dashboard">
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-3">
               <div>
                 <p className="text-xs font-medium text-text-2">{D.score.title}</p>
-                <p className="mt-1 text-3xl font-semibold text-link tabular">{D.score.points(p.score.total)}</p>
+                <p className={cx("mt-1 text-3xl font-semibold tabular", p.score.total < 0 ? "text-danger" : "text-link")}>{D.score.points(p.score.total)}</p>
               </div>
               <dl className="flex flex-wrap gap-2 text-xs">
                 {(

@@ -182,7 +182,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/retrospecti
           <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
             <div>
               <dt className="text-xs text-text-3">{R.score}</dt>
-              <dd className="font-semibold text-link tabular">{c.score} pts</dd>
+              <dd className={cx("font-semibold tabular", c.score < 0 ? "text-danger" : "text-link")}>{c.score} pts</dd>
             </div>
             <div>
               <dt className="text-xs text-text-3">{R.xp}</dt>

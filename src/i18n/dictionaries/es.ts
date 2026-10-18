@@ -375,7 +375,7 @@ export const es: Dict = {
         "+5 por intervalo terminado a tiempo, sin retraso.",
         "−0,5 por minuto de pausa durante la sesión.",
         "−1 por minuto de retraso en el intervalo.",
-        "El score del período nunca es negativo. Mide la calidad del enfoque; el XP sigue viniendo de los ciclos completados.",
+        "El score puede ser negativo cuando las pausas y los retrasos pesan más que el estudio. Mide la calidad del enfoque; el XP sigue viniendo de los ciclos completados.",
       ],
     },
     chartPick: "Líneas del gráfico",

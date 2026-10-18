@@ -46,13 +46,15 @@ export function computeScore(i: ScoreInput, w = SCORE_WEIGHTS): ScoreBreakdown {
     breakOverrun: min(i.breakOverrunSeconds) * w.breakOverrunMinute,
   };
   const round = (v: number) => Math.round(v);
-  const total = Math.max(0, round(parts.planned + parts.overtime + parts.cleanBreaks + parts.paused + parts.breakOverrun));
-  return {
-    total,
+  const shown = {
     planned: round(parts.planned),
     overtime: round(parts.overtime),
     cleanBreaks: round(parts.cleanBreaks),
     paused: round(parts.paused),
     breakOverrun: round(parts.breakOverrun),
   };
+  // O total é a soma das partes exibidas (bate com a conta de quem olha o Painel) e pode ser
+  // negativo quando pausas e atrasos pesam mais que o estudo.
+  const total = shown.planned + shown.overtime + shown.cleanBreaks + shown.paused + shown.breakOverrun;
+  return { total, ...shown };
 }

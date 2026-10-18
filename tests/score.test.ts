@@ -16,7 +16,10 @@ describe("Score de foco", () => {
     expect(s).toEqual({ total: 50 + 10 - 5 - 4, planned: 50, overtime: 0, cleanBreaks: 10, paused: -5, breakOverrun: -4 });
   });
 
-  it("nunca fica negativo", () => {
-    expect(computeScore({ activeSeconds: 60, overtimeSeconds: 0, pausedSeconds: 3 * 3600, cleanBreaks: 0, breakOverrunSeconds: 0 }).total).toBe(0);
+  it("pode ficar negativo quando pausas e atrasos pesam mais (total = soma das partes exibidas)", () => {
+    // Caso do Painel: +38 +1 +0 −25 −26 = −12
+    const s = computeScore({ activeSeconds: 38 * 60, overtimeSeconds: 0, pausedSeconds: 50 * 60, cleanBreaks: 0, breakOverrunSeconds: 26 * 60 });
+    expect(s).toMatchObject({ planned: 38, paused: -25, breakOverrun: -26 });
+    expect(computeScore({ activeSeconds: 39 * 60, overtimeSeconds: 2 * 60, pausedSeconds: 50 * 60, cleanBreaks: 0, breakOverrunSeconds: 26 * 60 }).total).toBe(37 + 1 - 25 - 26);
   });
 });

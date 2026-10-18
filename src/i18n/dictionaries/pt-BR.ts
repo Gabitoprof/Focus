@@ -381,7 +381,7 @@ export const ptBR = {
         "+5 por intervalo encerrado no tempo, sem atraso.",
         "−0,5 por minuto de pausa durante a sessão.",
         "−1 por minuto de atraso no intervalo.",
-        "O score do período nunca fica negativo. Ele mede a qualidade do foco; o XP continua vindo dos ciclos concluídos.",
+        "O score pode ficar negativo quando pausas e atrasos pesam mais que o estudo. Ele mede a qualidade do foco; o XP continua vindo dos ciclos concluídos.",
       ],
     },
     chartPick: "Linhas do gráfico",

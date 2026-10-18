@@ -380,7 +380,7 @@ export const en: Dict = {
         "+5 per break ended on time, with no overrun.",
         "−0.5 per minute paused during the session.",
         "−1 per minute of break overrun.",
-        "The period score never goes below zero. It measures focus quality; XP still comes from completed cycles.",
+        "The score can go negative when pauses and overruns outweigh study. It measures focus quality; XP still comes from completed cycles.",
       ],
     },
     chartPick: "Chart lines",
