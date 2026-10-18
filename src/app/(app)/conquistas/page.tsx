@@ -120,9 +120,7 @@ async function Content() {
                       )}
                       <div className="min-w-0 flex-1">
                         <p className="font-semibold">{info.name}</p>
-                        <p className="text-xs text-text-2">
-                          <span className="font-medium">{A.how}</span> {info.how}
-                        </p>
+                        <p className="text-xs text-text-2 first-letter:uppercase">{info.how}</p>
                       </div>
                     </div>
                     {a.unlocked && (

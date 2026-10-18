@@ -337,10 +337,23 @@ function Row({ r, d, locale }: { r: LeaderboardRow; d: Dict; locale: string }) {
             {r.showcase
               .filter((id) => hasAchievementIcon("achievements", id))
               .map((id) => {
-                const name = d.achievements.items[id]?.name ?? id;
+                const info = d.achievements.items[id] ?? { name: id, how: "" };
                 return (
-                  <li key={id}>
-                    <AchievementIcon id={id} alt={name} title={name} size={28} />
+                  // Balão ao passar o mouse (ou focar pelo teclado): medalha grande, nome e como conquistar.
+                  <li key={id} tabIndex={0} aria-label={`${info.name}: ${info.how}`} className="group relative rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                    <AchievementIcon id={id} alt="" size={28} />
+                    <div
+                      role="tooltip"
+                      className="pointer-events-none invisible absolute bottom-full left-1/2 z-30 mb-2 w-60 -translate-x-1/2 rounded-xl border border-border bg-surface p-3 text-left opacity-0 shadow-xl transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus:visible group-focus:opacity-100"
+                    >
+                      <div className="flex items-center gap-3">
+                        <AchievementIcon id={id} alt="" size={56} />
+                        <p className="text-sm font-semibold leading-tight text-text">{info.name}</p>
+                      </div>
+                      <p className="mt-2 text-xs leading-snug text-text-2 first-letter:uppercase">{info.how}</p>
+                      {/* Setinha apontando para a medalha. */}
+                      <span aria-hidden className="absolute left-1/2 top-full -mt-px h-2 w-2 -translate-x-1/2 -translate-y-1 rotate-45 border-b border-r border-border bg-surface" />
+                    </div>
                   </li>
                 );
               })}
