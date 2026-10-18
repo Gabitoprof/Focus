@@ -18,6 +18,9 @@ export default async function RetrospectivePage(props: PageProps<"/retrospectiva
   const { t } = await getI18n();
   return (
     <>
+      <Link href="/dashboard" className="mb-4 inline-block text-sm text-link hover:underline">
+        ← {t.retro.back}
+      </Link>
       <PageHeader title={t.retro.title} description={t.retro.description} />
       <Suspense fallback={<Skeleton className="h-[600px]" />}>
         <Content searchParams={props.searchParams} />

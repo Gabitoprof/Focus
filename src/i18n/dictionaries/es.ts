@@ -724,6 +724,7 @@ export const es: Dict = {
     title: "Retrospectiva",
     description: "Tu enfoque resumido por día, semana, mes y año: lo que salió bien y lo que puedes mejorar.",
     open: "Ver retrospectiva",
+    back: "Volver al Panel",
     kinds: { dia: "Día", semana: "Semana", mes: "Mes", ano: "Año" } as Record<string, string>,
     hero: { dia: "Tu día en foco", semana: "Tu semana en foco", mes: "Tu mes en foco", ano: "Tu año en foco" } as Record<string, string>,
     prevName: { dia: "ayer", semana: "la semana pasada (hasta el mismo día)", mes: "el mes pasado (hasta el mismo día)", ano: "el año pasado (hasta la misma fecha)" } as Record<string, string>,

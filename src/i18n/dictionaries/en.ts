@@ -729,6 +729,7 @@ export const en: Dict = {
     title: "Recap",
     description: "Your focus summed up by day, week, month and year: what went well and what to improve.",
     open: "See recap",
+    back: "Back to Dashboard",
     kinds: { dia: "Day", semana: "Week", mes: "Month", ano: "Year" } as Record<string, string>,
     hero: { dia: "Your day in focus", semana: "Your week in focus", mes: "Your month in focus", ano: "Your year in focus" } as Record<string, string>,
     prevName: { dia: "yesterday", semana: "last week (up to the same day)", mes: "last month (up to the same day)", ano: "last year (up to the same date)" } as Record<string, string>,

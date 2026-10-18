@@ -731,6 +731,7 @@ export const ptBR = {
     title: "Retrospectiva",
     description: "Seu foco resumido por dia, semana, mês e ano: o que deu certo e o que dá para melhorar.",
     open: "Ver retrospectiva",
+    back: "Voltar ao Painel",
     kinds: { dia: "Dia", semana: "Semana", mes: "Mês", ano: "Ano" } as Record<string, string>,
     hero: { dia: "Seu dia em foco", semana: "Sua semana em foco", mes: "Seu mês em foco", ano: "Seu ano em foco" } as Record<string, string>,
     prevName: { dia: "ontem", semana: "a semana passada (até o mesmo dia)", mes: "o mês passado (até o mesmo dia)", ano: "o ano passado (até a mesma data)" } as Record<string, string>,
