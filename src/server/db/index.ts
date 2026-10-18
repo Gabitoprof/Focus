@@ -40,13 +40,28 @@ async function backupIfDue(client: PGlite) {
 }
 
 /**
+ * Conexão com Postgres na nuvem (Supabase etc.): sempre criptografada (SSL). Poucas conexões
+ * por instância, porque na Vercel cada função abre o próprio pool e quem multiplexa é o pooler
+ * do Supabase (porta 6543). Banco local (localhost) fica sem SSL.
+ */
+export function pgPoolConfig(url: string) {
+  const local = /@(localhost|127\.0\.0\.1)(:|\/)/.test(url);
+  const connectionString = url.replace(/([?&])sslmode=[^&]*&?/, "$1").replace(/[?&]$/, "");
+  return {
+    connectionString,
+    max: Number(process.env.DB_POOL_MAX ?? 3),
+    ssl: local ? undefined : { rejectUnauthorized: false },
+  };
+}
+
+/**
  * Produção: Postgres real via DATABASE_URL (migrações com `npm run db:migrate`).
  * Desenvolvimento: PGlite gravado em disco, migrado automaticamente na primeira conexão.
  */
 async function createDb(): Promise<DB> {
   const url = process.env.DATABASE_URL;
   if (url) {
-    const pool = new Pool({ connectionString: url, max: 10 });
+    const pool = new Pool(pgPoolConfig(url));
     return drizzlePg(pool, { schema }) as unknown as DB;
   }
   // O PGlite aceita um único processo por pasta: o build de produção nunca pode abri-la

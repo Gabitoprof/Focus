@@ -6,13 +6,13 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
-import { getDb, MIGRATIONS_FOLDER, schema, type DB } from "../src/server/db";
+import { getDb, MIGRATIONS_FOLDER, pgPoolConfig, schema, type DB } from "../src/server/db";
 import { seedReferenceData } from "../src/server/db/seed";
 
 async function main() {
   const url = process.env.DATABASE_URL;
   if (url) {
-    const pool = new Pool({ connectionString: url });
+    const pool = new Pool(pgPoolConfig(url));
     const db = drizzle(pool, { schema });
     await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
     await seedReferenceData(db as unknown as DB);
