@@ -72,4 +72,4 @@ export function evaluateAchievements(metrics: Record<AchievementMetric, number>)
 }
 
 /** Quantas conquistas cabem na vitrine do ranking. */
-export const SHOWCASE_MAX = 5;
+export const SHOWCASE_MAX = 3;

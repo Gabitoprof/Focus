@@ -116,7 +116,7 @@ export async function getAchievements(ctx: Ctx, userId: string) {
   const [showcaseRow] = await ctx.db.select({ ids: profiles.showcaseAchievements }).from(profiles).where(eq(profiles.userId, userId));
   // Só entram na vitrine as que continuam conquistadas.
   const unlockedIds = new Set(list.filter((a) => a.unlocked).map((a) => a.id));
-  const showcase = (showcaseRow?.ids ?? []).filter((id) => unlockedIds.has(id));
+  const showcase = (showcaseRow?.ids ?? []).filter((id) => unlockedIds.has(id)).slice(0, SHOWCASE_MAX);
   return { list, unlocked: unlockedIds.size, total: list.length, showcase };
 }
 

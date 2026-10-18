@@ -105,7 +105,8 @@ async function Content() {
                   <li
                     key={a.id}
                     className={cx(
-                      "space-y-2 rounded-xl border p-4",
+                      // Coluna com o rodapé preso embaixo: o botão da vitrine fica no mesmo lugar em todos os cards.
+                      "flex flex-col gap-2 rounded-xl border p-4",
                       a.unlocked ? "border-accent bg-accent-soft/40" : "border-border bg-surface",
                     )}
                   >
@@ -125,13 +126,13 @@ async function Content() {
                       </div>
                     </div>
                     {a.unlocked && (
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
                         <span className="rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium text-accent-ink">{A.unlocked}</span>
                         <ShowcaseToggle id={a.id} name={info.name} showcase={showcase} />
                       </div>
                     )}
                     {!a.unlocked && (
-                      <div>
+                      <div className="mt-auto">
                         <div className="h-1.5 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label={info.name}>
                           <div className="h-full rounded-full bg-accent" style={{ width: `${progress}%` }} />
                         </div>

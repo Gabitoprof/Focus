@@ -108,7 +108,7 @@ export const profiles = pgTable(
     activeContext: text("active_context", { enum: CONTEXTS }).notNull().default("academic"),
     /** Saldo de XP. Só o servidor altera, junto com uma linha em xp_transactions. */
     xpBalance: integer("xp_balance").notNull().default(0),
-    /** Conquistas que a pessoa escolheu exibir no ranking (ids, na ordem escolhida; até 5). */
+    /** Conquistas que a pessoa escolheu exibir no ranking (ids, na ordem escolhida; até 3). */
     showcaseAchievements: text("showcase_achievements").array().notNull().default(sql`'{}'::text[]`),
     /** Aceite dos Termos de Uso e da Política de Privacidade (versão aceita e quando). */
     termsVersion: text("terms_version"),

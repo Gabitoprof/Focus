@@ -20,13 +20,13 @@ async function focus(userId: string, topicId: string) {
 }
 
 describe("Vitrine de conquistas no ranking", () => {
-  it("só aceita conquistas desbloqueadas, no máximo 5, e some se a conquista deixar de valer", async () => {
+  it("só aceita conquistas desbloqueadas, no máximo 3, e some se a conquista deixar de valer", async () => {
     const u = await createUser(env.ctx, "Ana");
     await expect(setShowcase(env.ctx, u.id, ["primeiro_foco"])).rejects.toThrow(/já desbloqueou/);
     const id = await focus(u.id, u.topic.id);
     expect(await setShowcase(env.ctx, u.id, ["primeiro_foco", "primeiro_ciclo", "primeiro_foco"])).toEqual(["primeiro_foco", "primeiro_ciclo"]);
     expect((await getAchievements(env.ctx, u.id)).showcase).toEqual(["primeiro_foco", "primeiro_ciclo"]);
-    await expect(setShowcase(env.ctx, u.id, ["a", "b", "c", "d", "e", "f"])).rejects.toThrow(/no máximo 5/);
+    await expect(setShowcase(env.ctx, u.id, ["a", "b", "c", "d"])).rejects.toThrow(/no máximo 3/);
     await expect(setShowcase(env.ctx, u.id, ["nao_existe"])).rejects.toThrow(/inválida/);
     // Sessão excluída: a conquista deixa de valer e sai da vitrine exibida.
     await deleteSession(env.ctx, u.id, id);

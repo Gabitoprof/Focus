@@ -6,7 +6,7 @@ import { appCtx, requireUser } from "@/server/auth/session";
 import { setShowcase } from "@/server/services/achievements";
 import { toResult } from "./result";
 
-/** Salva as conquistas da vitrine do ranking (até 5, só as desbloqueadas). */
+/** Salva as conquistas da vitrine do ranking (até 3, só as desbloqueadas). */
 export async function setShowcaseAction(ids: string[]) {
   return toResult(async () => {
     const user = await requireUser();

@@ -1,3 +1,4 @@
+import { SHOWCASE_MAX } from "@/domain/achievements";
 import { TZDate } from "@date-fns/tz";
 import { startOfDay, startOfISOWeek, startOfMonth } from "date-fns";
 import { and, eq, gte, inArray, isNotNull, lte, or, sql, type SQL } from "drizzle-orm";
@@ -328,7 +329,7 @@ export async function getLeaderboard(ctx: Ctx, viewerId: string, q: RankingQuery
       institution: extras.get(s.userId)?.institution ?? null,
       title: titleFor(extras.get(s.userId)?.totalSeconds ?? 0),
       publicCode: codeBy.get(s.userId) ?? null,
-      showcase: showcaseBy.get(s.userId) ?? [],
+      showcase: (showcaseBy.get(s.userId) ?? []).slice(0, SHOWCASE_MAX),
     };
   };
 
