@@ -1,6 +1,6 @@
 import { TZDate } from "@date-fns/tz";
 import { and, eq, inArray, isNotNull, ne, or, sql } from "drizzle-orm";
-import { evaluateAchievements, type AchievementMetric } from "@/domain/achievements";
+import { ACHIEVEMENTS, SHOWCASE_MAX, evaluateAchievements, type AchievementMetric } from "@/domain/achievements";
 import { computeStreaks, localDayKey, secondsByLocalDay } from "@/domain/time";
 import {
   breaks,
@@ -13,7 +13,7 @@ import {
   studySessions,
   topics,
 } from "../db/schema";
-import { getTimerSettings, type Ctx } from "./common";
+import { AppError, getTimerSettings, type Ctx } from "./common";
 import { notDeletedSession } from "./corrections";
 
 /**
@@ -113,5 +113,24 @@ export async function getAchievements(ctx: Ctx, userId: string) {
     institution: Number(membership[0]?.n ?? 0) > 0 ? 1 : 0,
   };
   const list = evaluateAchievements(metrics);
-  return { list, unlocked: list.filter((a) => a.unlocked).length, total: list.length };
+  const [showcaseRow] = await ctx.db.select({ ids: profiles.showcaseAchievements }).from(profiles).where(eq(profiles.userId, userId));
+  // Só entram na vitrine as que continuam conquistadas.
+  const unlockedIds = new Set(list.filter((a) => a.unlocked).map((a) => a.id));
+  const showcase = (showcaseRow?.ids ?? []).filter((id) => unlockedIds.has(id));
+  return { list, unlocked: unlockedIds.size, total: list.length, showcase };
+}
+
+/**
+ * Escolhe as conquistas da vitrine do ranking (até SHOWCASE_MAX, na ordem dada). Só aceita
+ * conquistas que a pessoa já desbloqueou — conferido aqui, no servidor.
+ */
+export async function setShowcase(ctx: Ctx, userId: string, ids: string[]) {
+  const unique = [...new Set(ids)];
+  if (unique.length > SHOWCASE_MAX) throw new AppError(`Escolha no máximo ${SHOWCASE_MAX} conquistas.`);
+  if (unique.some((id) => !ACHIEVEMENTS.some((a) => a.id === id))) throw new AppError("Conquista inválida.");
+  const { list } = await getAchievements(ctx, userId);
+  const unlocked = new Set(list.filter((a) => a.unlocked).map((a) => a.id));
+  if (unique.some((id) => !unlocked.has(id))) throw new AppError("Só dá para exibir conquistas que você já desbloqueou.");
+  await ctx.db.update(profiles).set({ showcaseAchievements: unique }).where(eq(profiles.userId, userId));
+  return unique;
 }

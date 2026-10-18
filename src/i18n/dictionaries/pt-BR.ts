@@ -694,6 +694,17 @@ export const ptBR = {
     soon: "Mensagens e feed de estudo chegam em breve.",
   },
   achievements: {
+    showcase: {
+      title: "Vitrine no ranking",
+      hint: (max: number) => `Escolha até ${max} conquistas desbloqueadas para aparecer ao lado do seu nome no Ranking.`,
+      empty: "Nenhuma escolhida ainda. Use ☆ Exibir no ranking nas conquistas desbloqueadas abaixo.",
+      emptyLocked: "Desbloqueie conquistas para montar a sua vitrine.",
+      add: "Exibir no ranking",
+      inShowcase: "Na vitrine",
+      full: (max: number) => `A vitrine já tem ${max} conquistas. Tire uma para trocar.`,
+      remove: (name: string) => `Tirar ${name} da vitrine`,
+      column: "Conquistas",
+    },
     title: "Conquistas",
     description: "Metas para acompanhar a sua evolução. Valem para tudo o que você já registrou, em todos os perfis.",
     summary: (u: number, total: number) => `${u} de ${total} conquistas desbloqueadas`,

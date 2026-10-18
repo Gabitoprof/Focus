@@ -70,3 +70,6 @@ export function evaluateAchievements(metrics: Record<AchievementMetric, number>)
     return { ...a, current: Math.min(current, a.target), unlocked: current >= a.target };
   });
 }
+
+/** Quantas conquistas cabem na vitrine do ranking. */
+export const SHOWCASE_MAX = 5;

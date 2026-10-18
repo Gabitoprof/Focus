@@ -203,6 +203,8 @@ export type LeaderboardRow = {
   title: TitleId;
   /** Código público da conta (para adicionar como amigo). */
   publicCode: string | null;
+  /** Conquistas que a pessoa escolheu exibir (vitrine), na ordem escolhida. */
+  showcase: string[];
 };
 
 export type Leaderboard =
@@ -297,7 +299,7 @@ export async function getLeaderboard(ctx: Ctx, viewerId: string, q: RankingQuery
   const [names, goals, extras] = needed.length
     ? await Promise.all([
         ctx.db
-          .select({ userId: profiles.userId, displayName: profiles.displayName, publicCode: profiles.publicCode })
+          .select({ userId: profiles.userId, displayName: profiles.displayName, publicCode: profiles.publicCode, showcase: profiles.showcaseAchievements })
           .from(profiles)
           .where(inArray(profiles.userId, needed)),
         ctx.db.select().from(userGoalTags).where(inArray(userGoalTags.userId, needed)),
@@ -306,6 +308,7 @@ export async function getLeaderboard(ctx: Ctx, viewerId: string, q: RankingQuery
     : [[], [], new Map<string, Extras>()];
   const nameBy = new Map(names.map((n) => [n.userId, n.displayName]));
   const codeBy = new Map(names.map((n) => [n.userId, n.publicCode]));
+  const showcaseBy = new Map(names.map((n) => [n.userId, n.showcase]));
 
   const toRow = (s: Standing, index: number): LeaderboardRow => {
     const position = index + 1;
@@ -325,6 +328,7 @@ export async function getLeaderboard(ctx: Ctx, viewerId: string, q: RankingQuery
       institution: extras.get(s.userId)?.institution ?? null,
       title: titleFor(extras.get(s.userId)?.totalSeconds ?? 0),
       publicCode: codeBy.get(s.userId) ?? null,
+      showcase: showcaseBy.get(s.userId) ?? [],
     };
   };
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AchievementIcon, hasAchievementIcon } from "@/components/achievement-icon";
 import { Card, PageHeader, Skeleton, cx } from "@/components/ui";
 import { formatDuration } from "@/domain/time";
 import { compactNumber } from "@/domain/titles";
@@ -255,6 +256,7 @@ function Board({
             <tr className="border-b border-border">
               <th className="w-16 px-5 py-2 font-medium">#</th>
               <th className="px-2 py-2 font-medium">{R.colStudent}</th>
+              <th className="hidden px-2 py-2 font-medium md:table-cell">{d.achievements.showcase.column}</th>
               <th className="hidden px-2 py-2 text-right font-medium lg:table-cell">{R.colPlatform}</th>
               <th className="hidden px-2 py-2 text-right font-medium sm:table-cell">{R.colProfile}</th>
               <th className="px-2 py-2 text-right font-medium">XP</th>
@@ -270,7 +272,7 @@ function Board({
             {viewerOutside && (
               <>
                 <tr aria-hidden>
-                  <td colSpan={6} className="px-5 py-1 text-center text-xs text-text-3">
+                  <td colSpan={7} className="px-5 py-1 text-center text-xs text-text-3">
                     ⋯
                   </td>
                 </tr>
@@ -328,6 +330,24 @@ function Row({ r, d, locale }: { r: LeaderboardRow; d: Dict; locale: string }) {
           {r.institution?.pending && <span className="text-warn"> · {R.pendingLink}</span>}
           {goals.length > 0 && <span className="hidden md:inline"> · {goals.join(" · ")}</span>}
         </span>
+      </td>
+      <td className="hidden px-2 py-2.5 md:table-cell">
+        {r.showcase.length > 0 ? (
+          <ul className="flex items-center gap-1.5" aria-label={d.achievements.showcase.column}>
+            {r.showcase
+              .filter((id) => hasAchievementIcon("achievements", id))
+              .map((id) => {
+                const name = d.achievements.items[id]?.name ?? id;
+                return (
+                  <li key={id}>
+                    <AchievementIcon id={id} alt={name} title={name} size={28} />
+                  </li>
+                );
+              })}
+          </ul>
+        ) : (
+          <span className="text-xs text-text-3">—</span>
+        )}
       </td>
       <td className="hidden px-2 py-2.5 text-right text-text-2 tabular lg:table-cell">{formatDuration(r.platformSeconds)}</td>
       <td className="hidden px-2 py-2.5 text-right text-text-2 tabular sm:table-cell">{formatDuration(r.studiedSeconds)}</td>

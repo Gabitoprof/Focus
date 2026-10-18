@@ -227,6 +227,10 @@ const MESSAGES: Record<string, { en: string; es: string }> = {
   "Esta sessão já teve o tempo reduzido. Se precisar, exclua-a.": { en: "This session's time was already reduced. If needed, delete it.", es: "El tiempo de esta sesión ya fue reducido. Si es necesario, elimínala." },
   "Informe o tempo que você realmente estudou (mín. 1 min).": { en: "Enter the time you actually studied (min. 1 min).", es: "Indica el tiempo que realmente estudiaste (mín. 1 min)." },
   "O novo tempo precisa ser menor que o registrado. Não é possível acrescentar horas.": { en: "The new time must be less than what was logged. Adding hours isn't possible.", es: "El nuevo tiempo debe ser menor que el registrado. No es posible agregar horas." },
+  // Vitrine de conquistas
+  "Escolha no máximo {n} conquistas.": { en: "Choose at most {n} achievements.", es: "Elige como máximo {n} logros." },
+  "Conquista inválida.": { en: "Invalid achievement.", es: "Logro inválido." },
+  "Só dá para exibir conquistas que você já desbloqueou.": { en: "You can only show achievements you have unlocked.", es: "Solo puedes mostrar logros que ya desbloqueaste." },
 };
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

@@ -169,6 +169,13 @@
       "when": 1792344782326,
       "tag": "0023_terms_acceptance",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792349678566,
+      "tag": "0024_achievement_showcase",
+      "breakpoints": true
     }
   ]
 }

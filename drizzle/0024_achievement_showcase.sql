@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ADD COLUMN "showcase_achievements" text[] DEFAULT '{}'::text[] NOT NULL;

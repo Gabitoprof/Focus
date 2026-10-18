@@ -687,6 +687,17 @@ export const es: Dict = {
     soon: "Los mensajes y el feed de estudio llegan pronto.",
   },
   achievements: {
+    showcase: {
+      title: "Vitrina en el ranking",
+      hint: (max) => `Elige hasta ${max} logros desbloqueados para mostrar junto a tu nombre en el Ranking.`,
+      empty: "Aún no elegiste ninguno. Usa ☆ Mostrar en el ranking en los logros desbloqueados de abajo.",
+      emptyLocked: "Desbloquea logros para armar tu vitrina.",
+      add: "Mostrar en el ranking",
+      inShowcase: "En la vitrina",
+      full: (max) => `La vitrina ya tiene ${max} logros. Quita uno para cambiar.`,
+      remove: (name) => `Quitar ${name} de la vitrina`,
+      column: "Logros",
+    },
     title: "Logros",
     description: "Metas para seguir tu evolución. Cuentan todo lo que ya registraste, en todos los perfiles.",
     summary: (u: number, total: number) => `${u} de ${total} logros desbloqueados`,

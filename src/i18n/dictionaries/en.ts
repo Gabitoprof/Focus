@@ -692,6 +692,17 @@ export const en: Dict = {
     soon: "Messages and study feed are coming soon.",
   },
   achievements: {
+    showcase: {
+      title: "Ranking showcase",
+      hint: (max) => `Pick up to ${max} unlocked achievements to show next to your name in the Ranking.`,
+      empty: "None picked yet. Use ☆ Show in ranking on the unlocked achievements below.",
+      emptyLocked: "Unlock achievements to build your showcase.",
+      add: "Show in ranking",
+      inShowcase: "In showcase",
+      full: (max) => `The showcase already has ${max} achievements. Remove one to swap.`,
+      remove: (name) => `Remove ${name} from the showcase`,
+      column: "Achievements",
+    },
     title: "Achievements",
     description: "Goals to track your progress. They count everything you've already logged, in every profile.",
     summary: (u: number, total: number) => `${u} of ${total} achievements unlocked`,

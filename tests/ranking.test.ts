@@ -134,7 +134,7 @@ describe("Classificação", () => {
     expect(json).not.toContain(a.id);
     expect(json).not.toContain(viewer.id);
     if (lb.status !== "ok") throw new Error(lb.status);
-    expect(Object.keys(lb.rows[0]).sort()).toEqual(["change", "displayName", "goals", "institution", "isViewer", "platformSeconds", "position", "publicCode", "studiedSeconds", "title", "xp"]);
+    expect(Object.keys(lb.rows[0]).sort()).toEqual(["change", "displayName", "goals", "institution", "isViewer", "platformSeconds", "position", "publicCode", "showcase", "studiedSeconds", "title", "xp"]);
     expect(lb.viewer?.isViewer).toBe(true);
   });
 
