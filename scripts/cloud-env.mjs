@@ -27,7 +27,8 @@ if (!nuvem?.DATABASE_URL) {
 }
 const previous = parse(".env.vercel") ?? {};
 const secret = (name, bytes = 32) => previous[name] || randomBytes(bytes).toString("base64url");
-const siteUrl = process.argv[2] || previous.BETTER_AUTH_URL || "https://TROCAR-PELO-ENDERECO.vercel.app";
+// Endereço do site: opcional (sem ele, o app usa o endereço oficial que a Vercel informa).
+const siteUrl = process.argv[2] || previous.BETTER_AUTH_URL || "";
 
 const vars = {
   DATABASE_URL: nuvem.DATABASE_URL,

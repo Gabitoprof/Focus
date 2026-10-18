@@ -54,3 +54,6 @@ next-env.d.ts
 
 # configuração local do Claude
 /.claude/
+
+# build de teste local (NEXT_DIST_DIR)
+/.next-build/

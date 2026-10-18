@@ -9,7 +9,10 @@ import { ensureProfile } from "../services/profile";
 function createAuth(db: DB) {
   return betterAuth({
     appName: "Focus",
-    baseURL: process.env.BETTER_AUTH_URL,
+    // Na Vercel, sem BETTER_AUTH_URL, usa o endereço oficial do projeto (variável de sistema da Vercel).
+    baseURL:
+      process.env.BETTER_AUTH_URL ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined),
     secret: process.env.BETTER_AUTH_SECRET,
     // Demonstração pelo túnel da Cloudflare (npm run demo:tunnel): só em desenvolvimento.
     trustedOrigins: process.env.NODE_ENV === "production" ? [] : ["https://*.trycloudflare.com"],

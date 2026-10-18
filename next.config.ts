@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Permite testar o build de produção em outra pasta sem atrapalhar o `next dev` (NEXT_DIST_DIR=.next-build).
+  ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
   cacheComponents: true,
   partialPrefetching: true,
   // PGlite carrega arquivos WASM em tempo de execução; não deve passar pelo bundler.
