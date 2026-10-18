@@ -57,3 +57,6 @@ next-env.d.ts
 
 # build de teste local (NEXT_DIST_DIR)
 /.next-build/
+
+# prévias do tratamento de ícones
+/.icon-previews/
